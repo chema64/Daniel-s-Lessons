@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+    
+        <!-- <link rel="stylesheet" href="style.css"> -->
+        <style>
+        /* ------------------- css ------------------- */
+        body > div {
+            margin: 0.5em;
+            min-height: 10px;
+            /*min-width: 10px;*/
+            background-color: pink;
+        }
+
+        </style>
+    </head>
+
+    <body>
+        <!-- ::::::::::::::::: html ::::::::::::::::: -->
+
+
+
+        <script>
+// ===================== js =====================
+
+// ----------------------------------------------
+function diceRollResultsListSpesh(numberOfDice, diceSides) {
+
+    //setting oldList to zero allows oldList to be populated
+    let oldList = [0]
+    let freshList = []
+
+    //number of times dice are rolled
+    for (var nextRoll = 1; nextRoll <= numberOfDice; nextRoll++) {
+        
+        // console.log(nextRoll, numberOfDice)'
+        freshList = []
+
+        /*creates all possible dice roll values from dice roll data stored in oldRes array. 
+          freshList is populated with these new results*/
+        oldList.forEach( function(oldRes) {
+            for (var possibleResult = 1; possibleResult <= diceSides; possibleResult++) {
+                freshList.push(oldRes + possibleResult)
+            }
+        })
+        
+        console.log('spesh, after loop ' + nextRoll + ': ', freshList)
+        oldList = freshList
+    }
+
+    return oldList
+
+}
+// ----------------------------------------------
+function diceRollResultsList(numberOfDice, diceSides) {
+
+    let oldList = []
+    let freshList = []
+
+
+    for (var firstRollResults = 1; firstRollResults <= diceSides; firstRollResults++) {
+        oldList.push(firstRollResults)
+    }
+
+    console.log('normal, before looping: ', oldList)
+
+    for (var nextRoll = 1; nextRoll <= numberOfDice - 1; nextRoll++) {
+        
+        // console.log(nextRoll, numberOfDice)
+        freshList = []
+
+        for (var oldResultIndex = 0; oldResultIndex < oldList.length; oldResultIndex++ ) {
+            var oldRes = oldList[oldResultIndex]
+
+            for (var possibleResult = 1; possibleResult <= diceSides; possibleResult++) {
+                freshList.push(oldRes + possibleResult)
+            }
+        }
+
+
+        console.log('normal, after loop ' + nextRoll + ': ', freshList)
+        oldList = freshList
+    }
+
+    return oldList
+
+}
+
+// ----------------------------------------------
+function makeDiv(divLength) {
+    const div = document.createElement("div")
+    div.style.width = divLength + "em"
+    document.body.appendChild(div)
+    return div
+}
+
+// ----------------------------------------------
+function setContent(div, divContent) {
+    div.innerHTML = divContent
+}
+// ----------------------------------------------
+function createDiceRollProbability(rawData) {
+    
+    let resultData = [] 
+
+    rawData.forEach(function(element) {
+
+    if(resultData[element]) {
+        console.log(true)
+        resultData[element] += 1;
+    }
+    else
+    {
+        console.log(false)
+        resultData[element] = 1;
+    }
+
+
+    });
+
+    return resultData
+
+}
+
+// ----------------------------------------------
+function printProbabilityResults(resultData) {
+
+    resultData.forEach(function(element, index) {
+    console.log(element)
+    let div = makeDiv(element)
+    setContent(div, '' + index + ' ' + element)
+
+    })
+}
+
+// ----------------------------------------------
+
+var rawData = []
+rawData = diceRollResultsList(3, 2)
+
+var resultData = [] 
+resultData = createDiceRollProbability(rawData)
+console.log(resultData)
+
+printProbabilityResults(resultData)
+
+
+
+
+
+
+// ===================== js =====================
+        </script>
+
+    </body>
+</html>
+

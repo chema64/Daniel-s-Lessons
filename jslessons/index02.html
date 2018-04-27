@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>v02</title>
+        <!-- <link rel="stylesheet" href="style.css"> -->
+        <style>
+        /* ------------------- css ------------------- */
+        body > div {
+            margin: 0.5em;
+            min-height: 10px;
+            /*min-width: 10px;*/
+            background-color: pink;
+        }
+
+        </style>
+    </head>
+
+    <body>
+        <!-- ::::::::::::::::: html ::::::::::::::::: -->
+
+
+
+        <script>
+// ===================== js =====================
+
+
+var listOfNumbers = [1, 3, 6, 13, 5, 9]
+
+// ----------------------------------------------
+function makeDiv(divLength) {
+    const div = document.createElement("div")
+    div.style.width = divLength + "em"
+    document.body.appendChild(div)
+    return div
+}
+// ----------------------------------------------
+
+function setContent(div, divContent) {
+    div.innerHTML = divContent
+}
+// ----------------------------------------------
+
+for (var i = 0; i <= listOfNumbers.length - 1; i++) {
+    let div = makeDiv(listOfNumbers[i])
+    setContent(div, listOfNumbers[i])
+}
+
+
+// ===================== js =====================
+        </script>
+
+    </body>
+</html>
+
