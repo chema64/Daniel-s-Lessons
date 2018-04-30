@@ -1,9 +1,11 @@
 // ===================== js =====================
 
 // ----------------------------------------------
-/* Using the inputs of numberOfDice and diceSides values each possible roll result or rollOutcome is populated into an array. 
-For example a 6 sided dice roll is stored as 6. This array is then returned for further processing in the  createDiceRollProbability function, which creates a rollCount value. For example if the value of 6 is rolled twice then the collCount value is totaled to the value of 2.  
-*/
+	/*  diceRollResultsListSpesh:
+
+	Using the inputs of numberOfDice and diceSides values each possible roll result or rollOutcome is populated into an array. 
+	For example a 6 sided dice roll is stored as 6. This array is then returned for further processing in the  createDiceRollProbability function, which creates a rollCount value. For example if the value of 6 is rolled twice then the collCount value is totaled to the value of 2.  
+	*/
 function diceRollResultsListSpesh(numberOfDice, diceSides) {
 
     //setting oldList to zero allows oldList to be populated during first loop
@@ -38,9 +40,11 @@ function diceRollResultsListSpesh(numberOfDice, diceSides) {
 }
 
 // ----------------------------------------------
-/*
-The rawdata array is  processing in the  createDiceRollProbability function, which creates a rollCount value in the resultData. For example if the value of 6 is rolled twice then the collCount value is totaled to the value of 2. 
-*/
+	/* createDiceRollProbability:
+
+	The rawdata array is  processing in the  createDiceRollProbability function, which creates a rollCount value in the resultData. For example if the value of 6 is rolled twice then the collCount value is totaled to the value of 2. 
+	
+	*/
 function createDiceRollProbability(rawData) {
     
     let resultData = [] 
@@ -65,9 +69,11 @@ function createDiceRollProbability(rawData) {
 }
 
 // ----------------------------------------------
-/*
-Create a div element and return div for use in printProbabilityTable function
-*/
+	/* makeDiv:
+
+	Create a div element and return div for use in printProbabilityTable function
+	
+	*/
 function makeDiv(divLength) {
     const div = document.createElement("div")
     div.style.width = divLength + "em"
@@ -75,7 +81,9 @@ function makeDiv(divLength) {
 }
 
 // ----------------------------------------------
-    /* Two values relating to the probability of dice rolls are tallied here from the resultData. Firstly all possible roll values 
+    /* printProbabilityTable:
+
+    Two values relating to the probability of dice rolls are tallied here from the resultData. Firstly all possible roll values 
     in resultData are stored as a array index value, which below is called rollOutcome. For example the rollOutcome value could be 
     6 when using a six sided dice, for one roll. Secondly the number of times that rollOutcome occurs is stored in the 
     rollCount value. 
@@ -86,9 +94,9 @@ function makeDiv(divLength) {
     These values are then used to populate a table below with the following column values:
     
     -rollOutcome
-    -ratio on rollOutcome to totalRollCount
-    -percentage on rollOutcome
-    -div bar chart
+    -ratio  (rollOutcome / totalRollCount)
+    -percentage  (rollOutcome / totalRollCount)
+    -div bar chart (rollCount /  highestRollCount * 100)
 
     */ 
 function printProbabilityTable(resultData) {
@@ -154,14 +162,82 @@ function printProbabilityTable(resultData) {
 
 // ----------------------------------------------
 
+function output() {
+
+	let array = validateInput()
+
+
+	// rawData = diceRollResultsListSpesh(2, 6)
+
+	// var resultData = [] 
+	// resultData = createDiceRollProbability(rawData)
+
+	// printProbabilityTable(resultData)
+
+}
+
+// ----------------------------------------------
+
+function validateInput() {
+	
+	let userInput = ""
+
+	userInput = document.getElementById("diceInput").value
+
+	/*Regex testing for three character string. For example 2d2. 
+	[1-5]{1}: First value must be a single digit between 1-5. Value represents number of dice. 
+	[d]{1}: Second character is a single digit with the value of 'd'
+	([0-9]{2}|[1-9]{1}): Third character is either a single digital character or two. The two digit 
+	character was created for values equal to 10 or greater. Value represents number of sides. 
+	*/
+
+	//Tests RegEx if successful save to inputTestResults, otherwise exist and print invalid to console
+	let inputTestResults = []
+	inputTestResults = userInput.match(/[1-5]{1}[d]{1}([0-9]{2}|[1-9]{1})/i)
+	console.log(inputTestResults)
+	
+	if(inputTestResults) {
+
+		console.log(inputTestResults[0])
+		
+		//Use "" delimiter to break string into character array
+		let inputSplitIntoArray = []
+		inputSplitIntoArray = inputTestResults[0].split("")
+		
+		
+		/* If the value of 10 or greater then was found in the last regex character.
+		Concatinate the last two array values into the third index and remove the 
+		last value in the array.
+		*/
+		if(inputSplitIntoArray.length === 4) {
+			inputSplitIntoArray[2] = inputSplitIntoArray[2] + inputSplitIntoArray[3]
+			inputSplitIntoArray.pop()
+			console.log(inputSplitIntoArray)
+		}
+		
+		console.log(inputSplitIntoArray)
+		return inputSplitIntoArray
+	}
+	else	{
+		console.log("invalid")
+		return false
+	}
+}
+
+// ----------------------------------------------
+
+
 var rawData = []
-rawData = diceRollResultsListSpesh(2, 6)
-
-var resultData = [] 
-resultData = createDiceRollProbability(rawData)
 
 
-printProbabilityTable(resultData)
+ // outPut()
+// rawData = diceRollResultsListSpesh(2, 6)
+
+// var resultData = [] 
+// resultData = createDiceRollProbability(rawData)
+
+
+// printProbabilityTable(resultData)
 
 
 // ===================== js =====================
