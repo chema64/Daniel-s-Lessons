@@ -3,8 +3,8 @@
 // ----------------------------------------------
 	/*  diceRollResultsListSpesh:
 
-	Using the inputs of numberOfDice and diceSides values each possible roll result or rollOutcome is populated into an array. 
-	For example a 6 sided dice roll is stored as 6. This array is then returned for further processing in the  createDiceRollProbability function, which creates a rollCount value. For example if the value of 6 is rolled twice then the collCount value is totaled to the value of 2.  
+	Using the inputs of numberOfDice and diceSides, values for each possible roll result or rollOutcome is populated into an array. 
+	For example a 6 sided dice roll is stored as 6. This array is then returned for further processing in the createDiceRollProbability function, which creates a rollCount value. For example if the value of 6 is rolled twice then the collCount value is totaled to the value of 2.  
 	*/
 function diceRollResultsListSpesh(numberOfDice, diceSides) {
 
@@ -161,38 +161,66 @@ function printProbabilityTable(resultData) {
 }
 
 // ----------------------------------------------
+	/* diceRollOutput
 
-function output() {
+	Validate input from html input element. If input is valid calculate dice roll probability information, using the following funcitons
+	diceRollResultsListSpesh and createDiceRollProbability. Lastly present the results in a html table using the printProbabilityTable 
+	function
+		
+	*/
+function diceRollOutput() {
 
-	let array = validateInput()
+	let diceParameters = []
+	let numberOfDice = 0
+	let diceSides = 0
+	let rawData = []
+	let resultData = []
 
+	if(validateInput()) {
+		diceParameters = validateInput()
+		
+		numberOfDice = diceParameters[0]
+		diceSides = diceParameters[2]
 
-	// rawData = diceRollResultsListSpesh(2, 6)
+		//Create an array containing all possible dice roll outcomes
+		rawData = diceRollResultsListSpesh(numberOfDice, diceSides)
 
-	// var resultData = [] 
-	// resultData = createDiceRollProbability(rawData)
+		//Work out the probability of each dice roll from rawData
+		resultData = createDiceRollProbability(rawData)
 
-	// printProbabilityTable(resultData)
+		//Create an table container all dice probably results
+		printProbabilityTable(resultData)
+	}
+	else {
+		console.log("diceRollOutput invalid")
+		return false
+	}
 
+	
+	
 }
 
 // ----------------------------------------------
-
-function validateInput() {
+	/* validateInput
 	
-	let userInput = ""
-
-	userInput = document.getElementById("diceInput").value
-
-	/*Regex testing for three character string. For example 2d2. 
+	Regex testing for three character string. For example 2d2. 
 	[1-5]{1}: First value must be a single digit between 1-5. Value represents number of dice. 
 	[d]{1}: Second character is a single digit with the value of 'd'
 	([0-9]{2}|[1-9]{1}): Third character is either a single digital character or two. The two digit 
 	character was created for values equal to 10 or greater. Value represents number of sides. 
+
 	*/
+function validateInput() {
+	
+	let userInput = ""
+
+	//get text entered into input element
+	userInput = document.getElementById("diceInput").value
+
+	
+	let inputTestResults = []
 
 	//Tests RegEx if successful save to inputTestResults, otherwise exist and print invalid to console
-	let inputTestResults = []
 	inputTestResults = userInput.match(/[1-5]{1}[d]{1}([0-9]{2}|[1-9]{1})/i)
 	console.log(inputTestResults)
 	
@@ -226,18 +254,6 @@ function validateInput() {
 
 // ----------------------------------------------
 
-
-var rawData = []
-
-
- // outPut()
-// rawData = diceRollResultsListSpesh(2, 6)
-
-// var resultData = [] 
-// resultData = createDiceRollProbability(rawData)
-
-
-// printProbabilityTable(resultData)
 
 
 // ===================== js =====================
