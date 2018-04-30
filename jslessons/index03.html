@@ -36,9 +36,12 @@
 // ===================== js =====================
 
 // ----------------------------------------------
+/* Using the inputs of numberOfDice and diceSides values each possible roll result or rollOutcome is populated into an array. 
+For example a 6 sided dice roll is stored as 6. This array is then returned for further processing in the  createDiceRollProbability function, which creates a rollCount value. For example if the value of 6 is rolled twice then the collCount value is totaled to the value of 2.  
+*/
 function diceRollResultsListSpesh(numberOfDice, diceSides) {
 
-    //setting oldList to zero allows oldList to be populated
+    //setting oldList to zero allows oldList to be populated during first loop
     let oldList = [0]
     let freshList = []
 
@@ -46,6 +49,8 @@ function diceRollResultsListSpesh(numberOfDice, diceSides) {
     for (var nextRoll = 1; nextRoll <= numberOfDice; nextRoll++) {
         
         // console.log(nextRoll, numberOfDice)'
+
+        // initialize freshList
         freshList = []
 
         /*creates all possible dice roll values from dice roll data stored in oldRes array. 
@@ -57,46 +62,49 @@ function diceRollResultsListSpesh(numberOfDice, diceSides) {
         })
         
         // console.log('spesh, after loop ' + nextRoll + ': ', freshList)
+
+        // set oldList with latest results set stored in freshList 
         oldList = freshList
     }
 
+    console.log('oldList: ' + oldList)
     return oldList
 
 }
 // ----------------------------------------------
-function diceRollResultsList(numberOfDice, diceSides) {
+// function diceRollResultsList(numberOfDice, diceSides) {
 
-    let oldList = []
-    let freshList = []
+//     let oldList = []
+//     let freshList = []
 
 
-    for (var firstRollResults = 1; firstRollResults <= diceSides; firstRollResults++) {
-        oldList.push(firstRollResults)
-    }
+//     for (var firstRollResults = 1; firstRollResults <= diceSides; firstRollResults++) {
+//         oldList.push(firstRollResults)
+//     }
 
-    // console.log('normal, before looping: ', oldList)
+//     // console.log('normal, before looping: ', oldList)
 
-    for (var nextRoll = 1; nextRoll <= numberOfDice - 1; nextRoll++) {
+//     for (var nextRoll = 1; nextRoll <= numberOfDice - 1; nextRoll++) {
         
-        // console.log(nextRoll, numberOfDice)
-        freshList = []
+//         // console.log(nextRoll, numberOfDice)
+//         freshList = []
 
-        for (var oldResultIndex = 0; oldResultIndex < oldList.length; oldResultIndex++ ) {
-            var oldRes = oldList[oldResultIndex]
+//         for (var oldResultIndex = 0; oldResultIndex < oldList.length; oldResultIndex++ ) {
+//             var oldRes = oldList[oldResultIndex]
 
-            for (var possibleResult = 1; possibleResult <= diceSides; possibleResult++) {
-                freshList.push(oldRes + possibleResult)
-            }
-        }
+//             for (var possibleResult = 1; possibleResult <= diceSides; possibleResult++) {
+//                 freshList.push(oldRes + possibleResult)
+//             }
+//         }
 
 
-        // console.log('normal, after loop ' + nextRoll + ': ', freshList)
-        oldList = freshList
-    }
+//         // console.log('normal, after loop ' + nextRoll + ': ', freshList)
+//         oldList = freshList
+//     }
 
-    return oldList
+//     return oldList
 
-}
+// }
 
 // ----------------------------------------------
 function makeDiv(divLength) {
@@ -106,11 +114,14 @@ function makeDiv(divLength) {
     return div
 }
 
+// // ----------------------------------------------
+// function setContent(div, divContent) {
+//     div.innerHTML = divContent
+// }
 // ----------------------------------------------
-function setContent(div, divContent) {
-    div.innerHTML = divContent
-}
-// ----------------------------------------------
+/*
+The rawdata array is  processing in the  createDiceRollProbability function, which creates a rollCount value in the resultData. For example if the value of 6 is rolled twice then the collCount value is totaled to the value of 2. 
+*/
 function createDiceRollProbability(rawData) {
     
     let resultData = [] 
@@ -135,68 +146,86 @@ function createDiceRollProbability(rawData) {
 }
 
 // ----------------------------------------------
-function printProbabilityResults(resultData) {
+// function printProbabilityResults(resultData) {
 
-    resultData.forEach(function(element, index) {
-        // console.log(element)
-        let div = makeDiv(element)
-        document.body.appendChild(div)
-        setContent(div, '' + index + ' ' + element)
+//     resultData.forEach(function(element, index) {
+//         // console.log(element)
+//         let div = makeDiv(element)
+//         document.body.appendChild(div)
+//         setContent(div, '' + index + ' ' + element)
 
-    })
-}
+//     })
+// }
 
 // ----------------------------------------------
+    /* Two values relating to the probability of dice rolls are tallied here from the resultData. Firstly all possible roll values 
+    in resultData are stored as a array index value, which below is called rollOutcome. For example the rollOutcome value could be 
+    6 when using a six sided dice, for one roll. Secondly the number of times that rollOutcome occurs is stored in the 
+    rollCount value. 
+
+    totalRollCount: Tallies all rollCount values for each rollOutome.
+    highestRollCount: Finds the highest rollCount value from all rollOutome values.
+    
+    These values are then used to populate a table below with the following column values:
+    
+    -rollOutcome
+    -ratio on rollOutcome to totalRollCount
+    -percentage on rollOutcome
+    -div bar chart
+
+    */ 
 function printProbabilityTable(resultData) {
 
     var table = document.createElement("table")
 
     var totalRollCount = 0
-    var maxRollCount = 0
+    var highestRollCount = 0
 
-    //sum total number of rolls
-    resultData.forEach(function(count) {
+    //Find the totalRollCount and highestRollCount from rollCount
+    resultData.forEach(function(rollCount) {
         
-        totalRollCount += count
-        if(maxRollCount < count) {
-            // console.log(count)
-            // console.log(maxRollCount)
-            maxRollCount = count
+        totalRollCount += rollCount
+        if( highestRollCount < rollCount) {
+
+             highestRollCount = rollCount
 
         }
         
-        // console.log("max " + maxRollCount)
+         
     })
 
     // console.log('total ' + totalRollCount)
-    // console.log("max2 " + maxRollCount)
+    // console.log(" highestRollCount: " +  highestRollCount)
     
-    resultData.forEach(function(count, outcome) {
+    //create a table to display rollCount results
+    resultData.forEach(function(rollCount, rollOutcome) {
 
         // make the row
         var tr = document.createElement("tr")
         table.appendChild(tr)
 
-        // do the outcome cell
-        var outcomeCell = document.createElement("td")
-        outcomeCell.innerHTML = outcome
-        tr.appendChild(outcomeCell)
+        // do the rollOutcome cell
+        var rollOutcomeCell = document.createElement("td")
+        rollOutcomeCell.innerHTML = rollOutcome
+        tr.appendChild(rollOutcomeCell)
 
         // do the ratio cell
         var ratioCell = document.createElement("td")
-        ratioCell.innerHTML = count  + '/' + totalRollCount
+        ratioCell.innerHTML = rollCount  + '/' + totalRollCount
         tr.appendChild(ratioCell)
 
         // do the percentage cell
         var ratioCell = document.createElement("td")
-        ratioCell.innerHTML = Math.round(count / totalRollCount * 1000)/10 + '%'
+        ratioCell.innerHTML = Math.round(rollCount / totalRollCount * 1000)/10 + '%'
         tr.appendChild(ratioCell)
 
 
         // do the graph bar cell
         var divCell = document.createElement("td")
-        var div = makeDiv(count)
-        var divWidth = count / maxRollCount * 200
+        var div = makeDiv(rollCount)
+        // console.log(rollCount + ' / ' +  highestRollCount)
+        // console.log((rollCount  /  highestRollCount) * 100 )
+        var divWidth = rollCount /  highestRollCount * 100
         div.style.width = divWidth + "px"
 
         divCell.appendChild(div)
@@ -209,11 +238,11 @@ function printProbabilityTable(resultData) {
 // ----------------------------------------------
 
 var rawData = []
-rawData = diceRollResultsList(5, 5)
+rawData = diceRollResultsListSpesh(2, 6)
 
 var resultData = [] 
 resultData = createDiceRollProbability(rawData)
-// console.log(resultData)
+ console.log(resultData)
 
 // printProbabilityResults(resultData)
 printProbabilityTable(resultData)
