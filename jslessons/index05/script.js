@@ -3,8 +3,13 @@
 // ----------------------------------------------
 	/*  diceRollResultsListSpesh:
 
-	Using the inputs of numberOfDice and diceSides, values for each possible roll result or rollOutcome is populated into an array. 
-	For example a 6 sided dice roll is stored as 6. This array is then returned for further processing in the createDiceRollProbability function, which creates a rollCount value. For example if the value of 6 is rolled twice then the collCount value is totaled to the value of 2.  
+	Using the inputs of numberOfDice and diceSides, values for each possible roll result or 
+	rollOutcome is populated into an array. 
+	For example 1d6 sided dice roll will produce [1,2,3,4,5,6]. This array can then be 
+	passed to createDiceRollProbability function, to create a rollCount value.
+
+	Returns an array: [oldList[] which contains all possible dice rolls, from the number of 
+	dice and dice sides]
 	*/
 function diceRollResultsListSpesh(numberOfDice, diceSides) {
 
@@ -14,26 +19,22 @@ function diceRollResultsListSpesh(numberOfDice, diceSides) {
 
     //number of times dice are rolled
     for (var nextRoll = 1; nextRoll <= numberOfDice; nextRoll++) {
-        
-  
+    	// each run of this loop adds another dice roll to the result set
 
         // initialize freshList
         freshList = []
 
-        /*creates all possible dice roll values from dice roll data stored in oldRes array. 
-          freshList is populated with these new results*/
+        // for each result we have SO FAR, add to newList each of the possible results
+        // that come from that old result plus one more dice roll.
         oldList.forEach( function(oldRes) {
             for (var possibleResult = 1; possibleResult <= diceSides; possibleResult++) {
                 freshList.push(oldRes + possibleResult)
             }
         })
         
-  
-
         // set oldList with latest results set stored in freshList 
         oldList = freshList
     }
-
 
     return oldList
 
@@ -42,37 +43,42 @@ function diceRollResultsListSpesh(numberOfDice, diceSides) {
 // ----------------------------------------------
 	/* createDiceRollProbability:
 
-	The rawdata array is  processing in the  createDiceRollProbability function, which creates a rollCount value in the resultData. For example if the value of 6 is rolled twice then the collCount value is totaled to the value of 2. 
-	
+	This processes the rawData array, and returns an array where 
+	the value at a given array index is the count of the number 
+	of times that value shows up. The array index value represents 
+	a dice roll result or value. For example index value 
+	resultCount[6], represents a dice roll value of 6.  
+	For example if 6 is rolled twice then the resultCountresultCount 
+	value at resultCount[6] will be 2.	
+
+	Returns an array: [resultCount[] which contains a roll count value for each index value in
+	the array. As explained above in this array each index value represents a dice roll value]
 	*/
 function createDiceRollProbability(rawData) {
     
-    let resultData = [] 
+    let resultCount = [] 
 
-    rawData.forEach(function(element) {
+    rawData.forEach(function(rawResult) {
 
-    if(resultData[element]) {
-
-        resultData[element] += 1;
-    }
-    else
-    {
-
-        resultData[element] = 1;
-    }
-
-
+	    if(resultCount[rawResult]) {
+	    	// if we've counted this result before, increment it
+	        resultCount[rawResult] += 1;
+	    } else {
+	    	// if this is the first time we've seen this result, its count is 1
+	        resultCount[rawResult] = 1;
+	    }
     });
 
-    return resultData
+    return resultCount
 
 }
 
 // ----------------------------------------------
 	/* makeDiv:
 
-	Create a div element and return div for use in printProbabilityTable function
-	
+	Create a div element of the specified width, and return it
+
+	Returns an object: [div[] which contains DOM div element object]
 	*/
 function makeDiv(divLength) {
     const div = document.createElement("div")
@@ -83,46 +89,56 @@ function makeDiv(divLength) {
 // ----------------------------------------------
     /* printProbabilityTable:
 
-    Two values relating to the probability of dice rolls are tallied here from the resultData. Firstly all possible roll values 
-    in resultData are stored as a array index value, which below is called rollOutcome. For example the rollOutcome value could be 
-    6 when using a six sided dice, for one roll. Secondly the number of times that rollOutcome occurs is stored in the 
-    rollCount value. 
+	Given an array where the value at a given index
+	is the times that index will show up as a result
+	(as returned by createDiceRollProbability(...)),
+	produce a nice looking table of results including
+	a pretty graph.
 
-    totalRollCount: Tallies all rollCount values for each rollOutome.
-    highestRollCount: Finds the highest rollCount value from all rollOutome values.
+	if the result is "roll", the number of times
+	roll occurs is "rollCount".. the table includes 
+	these columns:
     
-    These values are then used to populate a table below with the following column values:
-    
-    -rollOutcome
-    -ratio  (rollOutcome / totalRollCount)
-    -percentage  (rollOutcome / totalRollCount)
-    -div bar chart (rollCount /  highestRollCount * 100)
+    - roll
+    - ratio  (rollCount / totalRollCount)
+    - percentage  (rollCount / totalRollCount)
+    - div bar chart (rollCount /  highestRollCount * 100)
+
+    Returns false : [False value is returned if
+    validateInput function returns false] 
 
     */ 
 function printProbabilityTable(resultData) {
 
     var table = document.createElement("table")
 
-    var totalRollCount = 0
-    var highestRollCount = 0
+    var totalRollCount = 0 // sum of all rollCounts
+    var highestRollCount = 0 // max of rollCounts
+
+    //
+    // first, work out total and max.
+    //
 
     //Find the totalRollCount and highestRollCount from rollCount
     resultData.forEach(function(rollCount) {
-        
+    	// do two things in this loop:
+    	// ..sum up the total roll counts
         totalRollCount += rollCount
+        // ..remember the highest we've seen
         if( highestRollCount < rollCount) {
-
              highestRollCount = rollCount
-
         }
-        
-         
     })
 
+    //
+    // now make the actual table
+    //
 
-    
-    //create a table to display rollCount results
+	const maxGraphBarLength = 400
     resultData.forEach(function(rollCount, rollOutcome) {
+
+    	// rollOutcome is the actual result
+    	// rollCount is the number of ways that result can occur
 
         // make the row
         var tr = document.createElement("tr")
@@ -143,12 +159,11 @@ function printProbabilityTable(resultData) {
         ratioCell.innerHTML = Math.round(rollCount / totalRollCount * 1000)/10 + '%'
         tr.appendChild(ratioCell)
 
-
         // do the graph bar cell
         var divCell = document.createElement("td")
         var div = makeDiv(rollCount)
 
-        var divWidth = rollCount /  highestRollCount * 100
+        var divWidth = rollCount / highestRollCount * maxGraphBarLength
         div.style.width = divWidth + "px"
 
         //attach div element to table cell 
@@ -163,23 +178,28 @@ function printProbabilityTable(resultData) {
 // ----------------------------------------------
 	/* diceRollOutput
 
-	Validate input from html input element. If input is valid calculate dice roll probability information, using the following funcitons
-	diceRollResultsListSpesh and createDiceRollProbability. Lastly present the results in a html table using the printProbabilityTable 
-	function
+	Validate input from html input element. If input is valid calculate dice roll probability 
+	information, using the following funcitons.
+	diceRollResultsListSpesh and createDiceRollProbability. Lastly present the results in a 
+	html table using the printProbabilityTable function.
+
+	Returns false : [False value is returned if
+    validateInput function returns false] 
 		
 	*/
 function diceRollOutput() {
 
-	let diceParameters = []
 	let numberOfDice = 0
 	let diceSides = 0
+	let rollLetter = ''
 	let rawData = []
 	let resultData = []
+	let diceParameters = validateInput()
 
-	if(validateInput()) {
-		diceParameters = validateInput()
+	if (diceParameters) {
 		
 		numberOfDice = diceParameters[0]
+		rollLetter = diceParameters[1]
 		diceSides = diceParameters[2]
 
 		//Create an array containing all possible dice roll outcomes
@@ -188,26 +208,51 @@ function diceRollOutput() {
 		//Work out the probability of each dice roll from rawData
 		resultData = createDiceRollProbability(rawData)
 
-		//Create an table container all dice probably results
+		//Create an table displaying results
 		printProbabilityTable(resultData)
-	}
-	else {
-		console.log("diceRollOutput invalid")
-		return false
-	}
 
-	
-	
+
+		// make this work:
+		// printProbabilityTable(resultData, '#results')
+
+
+
+		let table = document.querySelector("table")
+		console.log(table)
+		let tr = document.createElement('tr')
+		console.log(tr)
+		let th = document.createElement('th')
+		th.colSpan = 4
+		console.log(th)
+		th.innerHTML = numberOfDice + rollLetter + diceSides
+		console.log(th)
+		tr.appendChild(th)
+
+		// table.appendChild(tr)
+		table.insertAdjacentElement('afterbegin', tr)
+
+	} else {
+		alert("I couldn't understand that roll.")
+		return false
+	}	
 }
 
 // ----------------------------------------------
 	/* validateInput
 	
 	Regex testing for three character string. For example 2d2. 
-	[1-5]{1}: First value must be a single digit between 1-5. Value represents number of dice. 
-	[d]{1}: Second character is a single digit with the value of 'd'
-	([0-9]{2}|[1-9]{1}): Third character is either a single digital character or two. The two digit 
-	character was created for values equal to 10 or greater. Value represents number of sides. 
+	^([1-5] : First value must be a single digit between 1-5. ^ corret symbol means that this 
+	character gas to be the first character. Value represents number of dice. 
+	(d) : Second character is a single digit with the value of 'd'
+	([1-9][0-9]?)$ : Third character is either a single digital character or two. The $ symbol 
+	means that the second character is optional. The $ symbol means that these characters have
+	to be last characters in the string. Value represents number of sides of a dice. 
+
+	Returns an array: [num-of-dice-digit, "d", num-of-sides-digits]
+	
+	OR
+	
+	Returns false : [If RegEx failed] 
 
 	*/
 function validateInput() {
@@ -215,44 +260,23 @@ function validateInput() {
 	let userInput = ""
 
 	//get text entered into input element
-	userInput = document.getElementById("diceInput").value
-
+	userInput = document.getElementById("diceInput").value.trim()
 	
-	let inputTestResults = []
-
 	//Tests RegEx if successful save to inputTestResults, otherwise exist and print invalid to console
-	inputTestResults = userInput.match(/[1-5]{1}[d]{1}([0-9]{2}|[1-9]{1})/i)
-	console.log(inputTestResults)
-	
-	if(inputTestResults) {
+	const diceMatcher = RegExp(/^([1-5])(d)([1-9][0-9]?)$/i)
 
-		console.log(inputTestResults[0])
-		
-		//Use "" delimiter to break string into character array
-		let inputSplitIntoArray = []
-		inputSplitIntoArray = inputTestResults[0].split("")
-		
-		
-		/* If the value of 10 or greater then was found in the last regex character.
-		Concatinate the last two array values into the third index and remove the 
-		last value in the array.
-		*/
-		if(inputSplitIntoArray.length === 4) {
-			inputSplitIntoArray[2] = inputSplitIntoArray[2] + inputSplitIntoArray[3]
-			inputSplitIntoArray.pop()
-			console.log(inputSplitIntoArray)
-		}
-		
-		console.log(inputSplitIntoArray)
-		return inputSplitIntoArray
-	}
-	else	{
-		console.log("invalid")
+	let inputMatches = diceMatcher.exec(userInput)
+
+	if (inputMatches) {
+		// then the input DID match the regexp
+		return [inputMatches[1], inputMatches[2], inputMatches[3]]
+	} else {
 		return false
 	}
 }
 
 // ----------------------------------------------
+
 
 
 
