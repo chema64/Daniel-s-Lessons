@@ -111,7 +111,8 @@ function makeDiv(divLength) {
 function printProbabilityTable(resultData) {
 
     var table = document.createElement("table")
-
+    document.body.appendChild(table)
+    console.log
     var totalRollCount = 0 // sum of all rollCounts
     var highestRollCount = 0 // max of rollCounts
 
@@ -134,45 +135,75 @@ function printProbabilityTable(resultData) {
     // now make the actual table
     //
 
+	resultData.forEach( function(rollCount, rollOutcome) {
+		const tr = produceOneRow(rollOutcome, rollCount, highestRollCount, totalRollCount)
+		table.appendChild(tr)
+	})
+
+}
+
+
+// ----------------------------------------------
+
+function produceOneRow(outcome, count, highestCount, totalCount) {
+	// ...
 	const maxGraphBarLength = 400
-    resultData.forEach(function(rollCount, rollOutcome) {
+	// make the row
+	var tr = document.createElement("tr")
+	// table.appendChild(tr)
 
-    	// rollOutcome is the actual result
-    	// rollCount is the number of ways that result can occur
+	// do the rollOutcome cell
+	var rollOutcomeCell = document.createElement("td")
+	rollOutcomeCell.innerHTML = outcome
+	tr.appendChild(rollOutcomeCell)
 
-        // make the row
-        var tr = document.createElement("tr")
-        table.appendChild(tr)
+	// do the ratio cell
+	var ratioCell = document.createElement("td")
+	ratioCell.innerHTML = count  + '/' + totalCount
+	tr.appendChild(ratioCell)
 
-        // do the rollOutcome cell
-        var rollOutcomeCell = document.createElement("td")
-        rollOutcomeCell.innerHTML = rollOutcome
-        tr.appendChild(rollOutcomeCell)
+	// do the percentage cell
+	var ratioCell = document.createElement("td")
+	ratioCell.innerHTML = Math.round(count / totalCount * 1000)/10 + '%'
+	tr.appendChild(ratioCell)
 
-        // do the ratio cell
-        var ratioCell = document.createElement("td")
-        ratioCell.innerHTML = rollCount  + '/' + totalRollCount
-        tr.appendChild(ratioCell)
+	// do the graph bar cell
+	var divCell = document.createElement("td")
+	var div = makeDiv(count)
 
-        // do the percentage cell
-        var ratioCell = document.createElement("td")
-        ratioCell.innerHTML = Math.round(rollCount / totalRollCount * 1000)/10 + '%'
-        tr.appendChild(ratioCell)
+	var divWidth = count / highestCount * maxGraphBarLength
+	div.style.width = divWidth + "px"
 
-        // do the graph bar cell
-        var divCell = document.createElement("td")
-        var div = makeDiv(rollCount)
+	//attach div element to table cell 
+	divCell.appendChild(div)
+	tr.appendChild(divCell)
 
-        var divWidth = rollCount / highestRollCount * maxGraphBarLength
-        div.style.width = divWidth + "px"
+	return tr
+}
 
-        //attach div element to table cell 
-        divCell.appendChild(div)
-        tr.appendChild(divCell)
+// ----------------------------------------------
+/*
+	returns false if the input string is unrecognisable, otherwise
+	returns a two element array of integers [numRolls, diceSides]
+*/
+function parseInput(inputString) {
 
-    })
+}
+// ----------------------------------------------
+/*
+	produces a nice looking graph of dice roll probabilities.
+	user specifies:
+	- rollString: a string of the form [rolls]d[sides], eg. 3d6
+	- destinationElement: either a query string or a HTML element
+		inside of which the graph will be inserted
+	- graphBarWidth: if specified, the max length (in pixels) of 
+		the graph's longest bar.  If not specified, defaults to 200.
 
-    document.body.appendChild(table)
+	returns false if the string isn't a valid roll string; otherwise
+	returns a reference to the graph's table element.
+*/
+function graphRoll(rollString, destinationElement, graphBarWidth) {
+
 }
 
 // ----------------------------------------------
@@ -194,7 +225,7 @@ function diceRollOutput() {
 	let rollLetter = ''
 	let rawData = []
 	let resultData = []
-	let diceParameters = validateInput()
+	let diceParameters = acquireInput()
 
 	if (diceParameters) {
 		
@@ -238,7 +269,7 @@ function diceRollOutput() {
 }
 
 // ----------------------------------------------
-	/* validateInput
+	/* acquireInput
 	
 	Regex testing for three character string. For example 2d2. 
 	^([1-5] : First value must be a single digit between 1-5. ^ corret symbol means that this 
@@ -255,7 +286,7 @@ function diceRollOutput() {
 	Returns false : [If RegEx failed] 
 
 	*/
-function validateInput() {
+function acquireInput() {
 	
 	let userInput = ""
 
@@ -276,6 +307,7 @@ function validateInput() {
 }
 
 // ----------------------------------------------
+
 
 
 
