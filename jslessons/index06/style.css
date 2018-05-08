@@ -1,0 +1,31 @@
+html, body {
+    font-family: sans-serif;
+}
+td div {
+    margin: -0.1em 0.5em;
+    /*height: 1.2em;*/
+    /*height: 0.2em;*/
+    height: 0.4em;
+    background-color: steelblue;
+}
+table {
+    padding: 1em;
+    border-collapse: collapse;
+    /*border-spacing: 5px;*/
+    border: thin solid green;
+}
+td {
+    /*background-color: #f8f8f8;*/
+    padding: 0.1em 0.75em;
+    text-align: right;
+}
+
+th {
+	border: thin solid black;
+	text-align: center;
+}
+
+tr {
+	/*border-bottom: 1px solid #eee;*/
+	background-image: linear-gradient(#f8f8f8, #e8e8e8);
+}
